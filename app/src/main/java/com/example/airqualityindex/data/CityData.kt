@@ -10,4 +10,9 @@ class CityData : BaseObservable() {
 
     @get:Bindable
     var aqi: Double? = null
+
+    @get:Bindable
+    var timeAgo: String? = null
+
+
 }

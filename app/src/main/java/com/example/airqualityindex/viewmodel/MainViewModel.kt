@@ -1,20 +1,16 @@
 package com.example.airqualityindex.viewmodel
 
-import android.content.Context
-import androidx.databinding.ObservableArrayList
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.example.airqualityindex.data.CityData
 import com.example.airqualityindex.data.Repository
 
-class MainViewModel(context: Context?) : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val cityData: ObservableArrayList<CityData> = ObservableArrayList()
-    private val repository: Repository = Repository(context!!)
-
-    fun getAqi(): List<CityData> {
-        cityData.addAll(repository.fetchCityData())
-        return cityData
-
+    private val repository: Repository = Repository()
+    fun getAqi(): MutableLiveData<ArrayList<CityData>> {
+        return repository.fetchCityData()
     }
 
 }
