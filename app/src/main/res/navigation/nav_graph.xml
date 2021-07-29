@@ -18,5 +18,11 @@
         android:id="@+id/graphFragment"
         android:name="com.example.airqualityindex.view.GraphFragment"
         android:label="fragment_graph"
-        tools:layout="@layout/fragment_graph" />
+        tools:layout="@layout/fragment_graph" >
+        <argument
+            android:name="cityName"
+            app:argType="string" />
+        <argument android:name="aqiLevel"
+            app:argType="string" />
+    </fragment>
 </navigation>

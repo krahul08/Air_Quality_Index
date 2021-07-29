@@ -1,7 +1,6 @@
 package com.example.airqualityindex.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
+import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.airqualityindex.R
@@ -23,7 +23,6 @@ class MainFragment : Fragment(), FragmentCommunication {
     private lateinit var mainFragmentBinding: MainFragmentBinding
     private lateinit var adapter: CitiesAqiRecyclerviewAdapter
     private var navController: NavController? = null
-    private lateinit var fragmentCommunication: FragmentCommunication
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +31,6 @@ class MainFragment : Fragment(), FragmentCommunication {
         mainFragmentBinding =
             DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false)
         viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-
         getObserver()
         return mainFragmentBinding.root
     }
@@ -46,14 +44,18 @@ class MainFragment : Fragment(), FragmentCommunication {
         viewModel.getAqi().observe(viewLifecycleOwner) {
             mainFragmentBinding.cityAqiList.layoutManager =
                 LinearLayoutManager(mainFragmentBinding.cityAqiList.context)
-            adapter = CitiesAqiRecyclerviewAdapter(requireContext(), )
+            adapter = CitiesAqiRecyclerviewAdapter(requireContext(), this)
             adapter.setData(it)
             mainFragmentBinding.cityAqiList.adapter = adapter
         }
     }
 
-    override fun respond(city: String?, aqi: Double?, timeAgo: String?) {
-        Log.d("afaffafa", "City:-" + city + "Aqi" + aqi + "timeAgo" + timeAgo)
+    override fun respond(city: String, aqi: String, timeAgo: String) {
+
+        val action: NavDirections =
+            MainFragmentDirections.actionMainFragmentToGraphFragment(city, aqi)
+        navController?.navigate(action)
+
     }
 
 }

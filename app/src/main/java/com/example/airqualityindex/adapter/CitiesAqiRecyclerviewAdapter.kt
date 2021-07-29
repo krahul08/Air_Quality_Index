@@ -13,10 +13,10 @@ import com.example.airqualityindex.databinding.ItemCityListBinding
 
 class CitiesAqiRecyclerviewAdapter(
     var requireContext: Context,
+    private var fragmentCommunication: FragmentCommunication
 ) :
-    RecyclerView.Adapter<CitiesAqiViewHolder>() {
+    RecyclerView.Adapter<CitiesAqiRecyclerviewAdapter.CitiesAqiViewHolder>() {
     private lateinit var cityList: ArrayList<CityData>
-    private lateinit var fragmentCommunication: FragmentCommunication
 
     fun setData(cityList: ArrayList<CityData>) {
         this.cityList = cityList
@@ -27,33 +27,38 @@ class CitiesAqiRecyclerviewAdapter(
             LayoutInflater.from(viewGroup.context), R.layout.item_city_list,
             viewGroup, false
         )
-        return CitiesAqiViewHolder(binding, fragmentCommunication)
+        return CitiesAqiViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: CitiesAqiViewHolder, position: Int) {
-        holder.onBind(cityList[position], requireContext)
+        holder.onBind(cityList[position], requireContext, fragmentCommunication)
     }
     override fun getItemCount(): Int {
         return cityList.size
     }
-}
 
 class CitiesAqiViewHolder(
-    private val binding: ItemCityListBinding,
-    var fragmentCommunication: FragmentCommunication
+    val binding: ItemCityListBinding
 ) : RecyclerView.ViewHolder(
     binding.root
 ) {
-    fun onBind(cityData: CityData, requireContext: Context) {
+    fun onBind(
+        cityData: CityData,
+        requireContext: Context,
+        fragmentCommunication: FragmentCommunication
+    ) {
 
         binding.textCity.text = cityData.city
-        binding.positionBasedCard.setOnClickListener {
-            fragmentCommunication.respond(cityData.city, cityData.aqi, cityData.timeAgo)
-        }
-
         val decimalNumber = String.format("%.2f", cityData.aqi)
         Log.d("Rahul Debug", "" + decimalNumber)
 
+        binding.positionBasedCard.setOnClickListener {
+            fragmentCommunication.respond(
+                cityData.city.toString(),
+                decimalNumber,
+                cityData.timeAgo.toString()
+            )
+        }
         when {
             cityData.aqi!! < 51 -> {
                 binding.textQualityIndex.setTextColor(
@@ -108,5 +113,10 @@ class CitiesAqiViewHolder(
         binding.textTime.text = cityData.timeAgo
         binding.executePendingBindings()
     }
+}
+}
+
+interface FragmentCommunication {
+    fun respond(city: String, aqi: String, timeAgo: String)
 }
 
